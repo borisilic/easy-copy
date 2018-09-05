@@ -1,0 +1,9 @@
+/bin
+/include
+/lib
+pip-selfcheck.json
+pyvenv.cfg
+*.xlsx
+__pycache__/
+venv/
+.idea/
