@@ -1,11 +1,11 @@
 import openpyxl
 import pyperclip
-import argparse
+
 import workbook_helper
 from pynput import keyboard, mouse
 
-parser = argparse.ArgumentParser()
-parser.parse_args()
+
+
 workbookName = 'asdf'
 wb = workbook_helper.open_workbook(workbookName)
 
