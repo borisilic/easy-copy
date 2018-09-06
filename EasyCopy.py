@@ -11,11 +11,7 @@ parser.add_argument('--sheet', help='The name of the sheet you wish to open')
 args = parser.parse_args()
 
 
-if args.file:
-    wb = workbook_helper.open_workbook(args.file)
-else:
-    print('Opening file with filename "default.xlsx"')
-    wb = workbook_helper.open_workbook('default.xlsx')
+wb = workbook_helper.get_file(args)
 
 if wb is None:
     print('Could not find file. Exiting program.')
