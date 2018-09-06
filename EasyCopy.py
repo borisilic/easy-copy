@@ -1,30 +1,37 @@
+import argparse
 import pyperclip
 from pynput import keyboard
-import argparse
-import sys
 import string
 import workbook_helper
+import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--file', help='The name of the file you wish to work with')
 parser.add_argument('--sheet', help='The name of the sheet you wish to open')
 args = parser.parse_args()
 
+
 if args.file:
     wb = workbook_helper.open_workbook(args.file)
 else:
+    print('Opening file with filename "default.xlsx"')
     wb = workbook_helper.open_workbook('default.xlsx')
 
 if wb is None:
     print('Could not find file. Exiting program.')
     sys.exit()
 
-sheet = wb['Product Master']
+if args.sheet:
+    sheet = wb[args.sheet]
+else:
+    sheets = wb.sheetnames
+    sheet = wb[sheets[0]]
+
 
 rowNumber = range(1, sheet.max_row + 1)
-
 headings = []
 products = []
+lineNumber = 0
 
 for cell in sheet[1]:
     headings.append(cell.value)
@@ -41,7 +48,8 @@ for row in rowNumber:
         line[heading] = cell_value
     products.append(line)
 
-lineNumber = 0
+
+print(products)
 
 
 def on_press(key):
@@ -57,13 +65,13 @@ def on_press(key):
 
 
 def copy_code():
-    reece_code = products[lineNumber][headings[0]]
+    reece_code = products[lineNumber]['Reece Code']
     pyperclip.copy(reece_code)
     print('Copied: ' + str(reece_code))
 
 
 def copy_description():
-    description = products[lineNumber][headings[1]]
+    description = products[lineNumber]['Description']
     pyperclip.copy(description)
     print('Copied: ' + str(description))
 
@@ -90,25 +98,14 @@ def get_next_line():
         print('Reached end of list.')
 
 
-def pretty(d, indent=0):
-    for key, value in d.items():
-        print('\t' * indent + str(key))
-        if isinstance(value, dict):
-            pretty(value, indent+1)
-        else:
-            print('\t' * (indent+1) + str(value))
-
-
 def display_line(number, info):
     print()
-    print('=' * 50)
-    print('Current line: ' + str(number))
-    # print(str(number) + ":", str(info))
-    pretty(info, 1)
-    print('=' * 50)
+    print('================')
+    print('Current line:')
+    print(str(number) + ":", str(info))
+    print('================')
 
 
-# Collect events until released
 with keyboard.Listener(
         on_press=on_press) as listener:
     listener.join()
