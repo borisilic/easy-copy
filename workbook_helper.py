@@ -12,7 +12,7 @@ def get_file(args):
 
 def open_workbook(name):
     try:
-        print('Opening file with name: ' + str(name))
+        print('Opened file with name: ' + str(name))
         return openpyxl.load_workbook(name)
     except OSError:
         print('Could not find file. Exiting program.')
@@ -38,12 +38,15 @@ def set_products(headings, row_number, sheet):
             cell_value = sheet[to_uppercase(headings.index(heading)) + str(row)].value
             line[heading] = cell_value
         products.append(line)
+    display_line(0, products[0])
     return products
 
 
 def get_previous_line(line_number, products):
     try:
         line_number = line_number - 1
+        if line_number < 0:
+            raise IndexError
         line_info = products[line_number]
         display_line(line_number, line_info)
         return line_number
@@ -81,3 +84,27 @@ def pretty(d, indent=0):
             pretty(value, indent+1)
         else:
             print('\t' * (indent+1) + str(value))
+
+
+def set_columns_to_copy(args, headings):
+    if args.columns:
+        columns = list(args.columns.upper())
+        if len(columns) == 1:
+            columns[1] = 'B'
+            columns[2] = 'C'
+            return iterate_over_array(columns, headings)
+        if len(columns) == 2:
+            columns[2] = 'C'
+            return iterate_over_array(columns, headings)
+        else:
+            return iterate_over_array(columns, headings)
+    else:
+        columns = ['A', 'B']
+        return iterate_over_array(columns, headings)
+
+
+def iterate_over_array(columns, headings):
+    headings_to_copy = []
+    for letter in columns:
+        headings_to_copy.append(headings[string.ascii_uppercase.find(letter)])
+    return headings_to_copy

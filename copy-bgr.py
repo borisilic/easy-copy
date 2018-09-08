@@ -2,7 +2,6 @@ import pyperclip
 from pynput import keyboard
 import workbook_helper
 import argparse
-import string
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--file', help='The name of the file you wish to work with')
