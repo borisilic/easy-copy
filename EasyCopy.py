@@ -10,14 +10,7 @@ parser.add_argument('--columns', help='The columns you want to be able to copy w
 args = parser.parse_args()
 
 wb = workbook_helper.get_file(args)
-
-if args.sheet:
-    sheet = wb[args.sheet]
-else:
-    sheets = wb.sheetnames
-    sheet = wb[sheets[0]]
-
-
+sheet = workbook_helper.get_sheet(args, wb)
 rowNumber = range(1, sheet.max_row + 1)
 headings = workbook_helper.set_headings(sheet)
 products = workbook_helper.set_products(headings, rowNumber, sheet)

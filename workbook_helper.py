@@ -108,3 +108,21 @@ def iterate_over_array(columns, headings):
     for letter in columns:
         headings_to_copy.append(headings[string.ascii_uppercase.find(letter)])
     return headings_to_copy
+
+
+def get_sheet(args, workbook):
+    if args.sheet:
+        sheets = workbook.sheetnames
+        try:
+            int(args.sheet)
+            return workbook[sheets[int(args.sheet) - 1]]
+        except ValueError:
+            try:
+                return workbook[args.sheet]
+            except KeyError:
+                print('Cannot find sheet labeled: ' + args.sheet)
+                print('Exiting program')
+                sys.exit()
+    else:
+        sheets = workbook.sheetnames
+        return workbook[sheets[0]]
