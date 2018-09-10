@@ -3,9 +3,9 @@ import sys
 import openpyxl
 
 
-def get_file(args):
-    if args.file:
-        return open_workbook(args.file)
+def get_file(filename):
+    if filename:
+        return open_workbook(filename)
     else:
         return open_workbook('default.xlsx')
 
@@ -15,7 +15,8 @@ def open_workbook(name):
         print('Opened file with name: ' + str(name))
         return openpyxl.load_workbook(name)
     except OSError:
-        print('Could not find file. Exiting program.')
+        print('Could not find file.')
+        input('Press enter to exit program')
         sys.exit()
 
 
@@ -72,7 +73,6 @@ def display_line(number, info):
     print()
     print('=' * 50)
     print('Current line: ' + str(number + 1))
-    # print(str(number) + ":", str(info))
     pretty(info, 1)
     print('=' * 50)
 
@@ -87,19 +87,31 @@ def pretty(d, indent=0):
 
 
 def set_columns_to_copy(args, headings):
-    if args.columns:
-        columns = list(args.columns.upper())
+    if args:
+        columns = list(args.upper())
         if len(columns) == 1:
-            columns[1] = 'B'
-            columns[2] = 'C'
-            return iterate_over_array(columns, headings)
+            try:
+                return iterate_over_array(columns, headings)
+            except IndexError:
+                print('Some/all of the columns specified have no values in this workbook')
+                input('Press enter to exit program')
+                sys.exit()
         if len(columns) == 2:
-            columns[2] = 'C'
-            return iterate_over_array(columns, headings)
+            try:
+                return iterate_over_array(columns, headings)
+            except IndexError:
+                print('Some/all of the columns specified have no values in this workbook')
+                input('Press enter to exit program')
+                sys.exit()
         else:
-            return iterate_over_array(columns, headings)
+            try:
+                return iterate_over_array(columns, headings)
+            except IndexError:
+                print('Some/all of the columns specified have no values in this workbook')
+                input('Press enter to exit program')
+                sys.exit()
     else:
-        columns = ['A', 'B']
+        columns = ['A']
         return iterate_over_array(columns, headings)
 
 
@@ -110,18 +122,23 @@ def iterate_over_array(columns, headings):
     return headings_to_copy
 
 
-def get_sheet(args, workbook):
-    if args.sheet:
+def get_sheet(sheet, workbook):
+    if sheet:
         sheets = workbook.sheetnames
         try:
-            int(args.sheet)
-            return workbook[sheets[int(args.sheet) - 1]]
+            int(sheet)
+            try:
+                return workbook[sheets[int(sheet) - 1]]
+            except IndexError:
+                print('Sheet number ' + str(sheet) + ' cannot be found in this workbook')
+                input('Press enter to exit program')
+                sys.exit()
         except ValueError:
             try:
-                return workbook[args.sheet]
+                return workbook[sheet]
             except KeyError:
-                print('Cannot find sheet labeled: ' + args.sheet)
-                print('Exiting program')
+                print('Cannot find sheet labeled: ' + sheet)
+                input('Press enter to exit')
                 sys.exit()
     else:
         sheets = workbook.sheetnames

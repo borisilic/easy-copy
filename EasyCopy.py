@@ -3,14 +3,16 @@ import pyperclip
 from pynput import keyboard
 import workbook_helper
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--file', help='The name of the file you wish to work with')
-parser.add_argument('--sheet', help='The number of the sheet you wish to open (1 or 2 or 3 or..)')
-parser.add_argument('--columns', help='The columns you want to be able to copy with keyboard')
-args = parser.parse_args()
-
-wb = workbook_helper.get_file(args)
-sheet = workbook_helper.get_sheet(args, wb)
+#parser = argparse.ArgumentParser()
+#parser.add_argument('--file', help='The name of the file you wish to work with')
+#parser.add_argument('--sheet', help='The number of the sheet you wish to open (1 or 2 or 3 or..)')
+#parser.add_argument('--columns', help='The columns you want to be able to copy with keyboard')
+#args = parser.parse_args()
+file = input('Enter file name.\n')
+sheet_1 = input('Enter sheet name.\n')
+args = input('Enter columns to copy.\n')
+wb = workbook_helper.get_file(file)
+sheet = workbook_helper.get_sheet(sheet_1, wb)
 rowNumber = range(1, sheet.max_row + 1)
 headings = workbook_helper.set_headings(sheet)
 products = workbook_helper.set_products(headings, rowNumber, sheet)
@@ -33,11 +35,16 @@ def on_press(key):
 
 
 def copy(element_requested):
-    element = products[lineNumber][headings_to_copy[element_requested]]
-    pyperclip.copy(element)
-    print('Copied: ' + str(element))
-
+    try:
+        element = products[lineNumber][headings_to_copy[element_requested]]
+        pyperclip.copy(element)
+        print('Copied: ' + str(element))
+    except IndexError:
+        print('That key has not been assigned a column to copy')
+    
 
 with keyboard.Listener(
         on_press=on_press) as listener:
     listener.join()
+
+input('Press ENTER to exit')
