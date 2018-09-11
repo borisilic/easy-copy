@@ -12,9 +12,10 @@ def get_file(filename):
 
 def open_workbook(name):
     try:
-        print('Opened file with name: ' + str(name))
+        print('Opened file in location: ' + str(name))
         return openpyxl.load_workbook(name)
-    except OSError:
+    except OSError as e:
+        print('Ran into OSError: ' + str(e))
         print('Could not find file.')
         input('Press enter to exit program')
         sys.exit()

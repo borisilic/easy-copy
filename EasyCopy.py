@@ -1,17 +1,14 @@
-import argparse
+import os, sys
 import pyperclip
 from pynput import keyboard
 import workbook_helper
 
-#parser = argparse.ArgumentParser()
-#parser.add_argument('--file', help='The name of the file you wish to work with')
-#parser.add_argument('--sheet', help='The number of the sheet you wish to open (1 or 2 or 3 or..)')
-#parser.add_argument('--columns', help='The columns you want to be able to copy with keyboard')
-#args = parser.parse_args()
+
+application_path = os.path.dirname(sys.executable)
 file = input('Enter file name.\n')
 sheet_1 = input('Enter sheet name.\n')
 args = input('Enter columns to copy.\n')
-wb = workbook_helper.get_file(file)
+wb = workbook_helper.get_file(os.path.join(application_path, file))
 sheet = workbook_helper.get_sheet(sheet_1, wb)
 rowNumber = range(1, sheet.max_row + 1)
 headings = workbook_helper.set_headings(sheet)
